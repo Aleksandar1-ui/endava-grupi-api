@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using AutoMapper;
 
 namespace endavaRestApi
 {
@@ -31,7 +31,15 @@ namespace endavaRestApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProductCSV, Product>();
+            });
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
             services.AddScoped<IShopRepository, ShopRepository>();
+            services.AddScoped<ICSVRepository, CSVService>();
             services.AddControllers();
             
             

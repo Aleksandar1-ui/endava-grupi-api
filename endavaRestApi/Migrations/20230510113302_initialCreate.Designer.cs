@@ -12,8 +12,8 @@ using endavaRestApi.Data;
 namespace endavaRestApi.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    [Migration("20230423203002_ProductFilter")]
-    partial class ProductFilter
+    [Migration("20230510113302_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -137,7 +137,7 @@ namespace endavaRestApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Weight")
-                        .HasColumnType("decimal(6,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("ProductId");
 

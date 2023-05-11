@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using endavaRestApi.Data;
 using endavaRestApi.Repositories;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace endavaRestApi.Controllers
 {
@@ -15,9 +17,11 @@ namespace endavaRestApi.Controllers
     public class ShopController : ControllerBase
     {
         private readonly IShopRepository _shopRepository;
-        public ShopController(IShopRepository shopRepository)
+        private readonly ICSVRepository _csvRepository;
+        public ShopController(IShopRepository shopRepository, ICSVRepository csvRepository)
         {
             _shopRepository = shopRepository;
+            _csvRepository = csvRepository;
         }
 
         [HttpGet]
@@ -27,7 +31,7 @@ namespace endavaRestApi.Controllers
         }
 
         [HttpPost("filter")]
-   
+
         public async Task<ActionResult<Product>> Filter([FromBody] ProductFilter filter)
         {
             var products = await _shopRepository.Get();
@@ -59,9 +63,11 @@ namespace endavaRestApi.Controllers
         {
             return await _shopRepository.Get(id);
         }
-
-
+        [HttpPost("produkti")]
+        public async Task<IActionResult> ImportProducts(IFormFile file)
+        {
+            await _csvRepository.VnesiCSV(file);
+            return Ok();
+        }
     }
-
-
 }

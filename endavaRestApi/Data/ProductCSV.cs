@@ -1,13 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace endavaRestApi.Data
 {
-    public class Product
+    public class ProductCSV  
     {
-        [Key]
-        public int ProductId { get; set; }
         [Required]
         public string ProductName { get; set; }
         public string ProductCategory { get; set; }
@@ -22,8 +21,5 @@ namespace endavaRestApi.Data
         [Required]
         public int ProductQuantity { get; set; }
         public string Color { get; set; }
-
-        public decimal TotalPrice { get; set; }
-
     }
 }

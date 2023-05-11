@@ -1,7 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\endavaRestApi",
+    "\\endavaRestApi\\Controllers",
+    "\\endavaRestApi\\Data",
+    "\\endavaRestApi\\Properties",
+    "\\endavaRestApi\\Repositories"
   ],
-  "SelectedNode": "\\endavaRestApi.sln",
+  "SelectedNode": "\\endavaRestApi\\Data\\Product.cs",
   "PreviewInSolutionExplorer": false
 }
