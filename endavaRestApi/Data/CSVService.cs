@@ -16,7 +16,7 @@ namespace endavaRestApi.Data
             _shopContext = shopContext;
             _logger = logger;
         }
-        public async Task VnesiCSV(IFormFile file)
+        public async Task ImportCsv(IFormFile file)
         {
 
             if (file == null || file.Length == 0)
@@ -34,11 +34,12 @@ namespace endavaRestApi.Data
             foreach (var record in records)
             {
                 var product = await _shopContext.Products
-                    .SingleOrDefaultAsync(p => p.ProductName == record.ProductName);
+                    .SingleOrDefaultAsync(p => p.ProductGuidId == record.ProductGuidId);
 
                 if (product == null)
                 {
                     product = new Product();
+                    product.ProductGuidId = Guid.NewGuid();
                     product.ProductName = record.ProductName;
                     product.ProductBrand = record.ProductBrand;
                     product.ProductCategory = record.ProductCategory;
@@ -54,6 +55,8 @@ namespace endavaRestApi.Data
                 }
                 else
                 {
+                    product.ProductGuidId = record.ProductGuidId;
+                    product.ProductName = record.ProductName;
                     product.ProductBrand = record.ProductBrand;
                     product.ProductCategory = record.ProductCategory;
                     product.ProductDescription = record.ProductDescription;
@@ -68,6 +71,21 @@ namespace endavaRestApi.Data
             }
 
             await _shopContext.SaveChangesAsync();
+        }
+        public async Task<bool> CheckOrderAsync(string firstName, string lastName, decimal sum, string productName)
+        {
+            var customer = await _shopContext.Customers.FirstOrDefaultAsync(c => c.CustomerFName == firstName 
+            && c.CustomerLName == lastName);
+            if (customer == null)
+            {
+                return false;
+            }
+            var order = await _shopContext.Orders.Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                .FirstOrDefaultAsync(o => o.CustomerId == customer.CustomerId
+                && o.OrderDetails.Any(od => od.Product.ProductName == productName
+                && od.Product.TotalPrice == sum));
+            return order != null;
         }
 
     }

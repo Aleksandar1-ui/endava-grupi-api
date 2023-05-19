@@ -24,6 +24,8 @@ namespace endavaRestApi.Data
         public string Color { get; set; }
 
         public decimal TotalPrice { get; set; }
+        [Required]
+        public Guid ProductGuidId { get; set; }
 
     }
 }

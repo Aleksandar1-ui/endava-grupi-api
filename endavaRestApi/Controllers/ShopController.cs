@@ -63,11 +63,17 @@ namespace endavaRestApi.Controllers
         {
             return await _shopRepository.Get(id);
         }
-        [HttpPost("produkti")]
+        [HttpPost("import-csv-file")]
         public async Task<IActionResult> ImportProducts(IFormFile file)
         {
-            await _csvRepository.VnesiCSV(file);
+            await _csvRepository.ImportCsv(file);
             return Ok();
+        }
+        [HttpGet("check-order")]
+        public async Task<IActionResult> CheckOrder(string firstName, string lastName, decimal sum, string productName)
+        {
+            var check = await _csvRepository.CheckOrderAsync(firstName, lastName, sum, productName);
+            return Ok(check);
         }
     }
 }

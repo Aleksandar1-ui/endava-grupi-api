@@ -21,5 +21,7 @@ namespace endavaRestApi.Data
         [Required]
         public int ProductQuantity { get; set; }
         public string Color { get; set; }
+        [Required]
+        public Guid ProductGuidId { get; set; }
     }
 }

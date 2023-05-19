@@ -4,9 +4,8 @@
     "\\endavaRestApi",
     "\\endavaRestApi\\Controllers",
     "\\endavaRestApi\\Data",
-    "\\endavaRestApi\\Properties",
     "\\endavaRestApi\\Repositories"
   ],
-  "SelectedNode": "\\endavaRestApi\\Data\\Product.cs",
+  "SelectedNode": "\\endavaRestApi\\Data\\CSVService.cs",
   "PreviewInSolutionExplorer": false
 }
