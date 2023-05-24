@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-
+using log4net;
 namespace endavaRestApi
 {
     public class Startup
@@ -51,9 +51,9 @@ namespace endavaRestApi
 
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ShopContext>(o => o.UseSqlServer(connectionString));
-           
 
-
+            //log4net.Config.XmlConfigurator.Configure(new FileInfo("log4net.config"));
+            services.AddSingleton<ILog>(LogManager.GetLogger(typeof(Startup)));
 
 
 

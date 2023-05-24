@@ -69,11 +69,5 @@ namespace endavaRestApi.Controllers
             await _csvRepository.ImportCsv(file);
             return Ok();
         }
-        [HttpGet("check-order")]
-        public async Task<IActionResult> CheckOrder(string firstName, string lastName, decimal sum, string productName)
-        {
-            var check = await _csvRepository.CheckOrderAsync(firstName, lastName, sum, productName);
-            return Ok(check);
-        }
     }
 }

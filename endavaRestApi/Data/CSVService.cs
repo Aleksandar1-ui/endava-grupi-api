@@ -4,14 +4,14 @@ using System.Globalization;
 using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-
+using log4net;
 namespace endavaRestApi.Data
 {
     public class CSVService : ICSVRepository
     {
         private readonly ShopContext _shopContext;
-        private readonly ILogger<CSVService> _logger;
-        public CSVService(ShopContext shopContext, ILogger<CSVService> logger)
+        private readonly ILog _logger = LogManager.GetLogger(typeof(CSVService));
+        public CSVService(ShopContext shopContext, ILog logger)
         {
             _shopContext = shopContext;
             _logger = logger;
@@ -21,7 +21,7 @@ namespace endavaRestApi.Data
 
             if (file == null || file.Length == 0)
             {
-                _logger.LogError("File is empty or null.");
+                _logger.Error("File is empty or null.");
                 throw new ArgumentException("File is empty or null.");
             }
 
@@ -69,23 +69,8 @@ namespace endavaRestApi.Data
                     _shopContext.Products.Update(product);
                 }
             }
-
+            _logger.Info("Successful");
             await _shopContext.SaveChangesAsync();
-        }
-        public async Task<bool> CheckOrderAsync(string firstName, string lastName, decimal sum, string productName)
-        {
-            var customer = await _shopContext.Customers.FirstOrDefaultAsync(c => c.CustomerFName == firstName 
-            && c.CustomerLName == lastName);
-            if (customer == null)
-            {
-                return false;
-            }
-            var order = await _shopContext.Orders.Include(o => o.OrderDetails)
-                .ThenInclude(od => od.Product)
-                .FirstOrDefaultAsync(o => o.CustomerId == customer.CustomerId
-                && o.OrderDetails.Any(od => od.Product.ProductName == productName
-                && od.Product.TotalPrice == sum));
-            return order != null;
         }
 
     }
