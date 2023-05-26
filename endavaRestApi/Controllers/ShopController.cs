@@ -69,5 +69,16 @@ namespace endavaRestApi.Controllers
             await _csvRepository.ImportCsv(file);
             return Ok();
         }
+        [HttpGet("matching-details")]
+        public async Task<IActionResult> GetMatchingPaymentDetails(int userId, string productName)
+        {
+            var result = await _csvRepository.GetMatchingPaymentDetailsAsync(userId, productName);
+            if (result is string errorMessage)
+            {
+                return BadRequest(errorMessage);
+            }
+
+            return Ok(result);
+        }
     }
 }

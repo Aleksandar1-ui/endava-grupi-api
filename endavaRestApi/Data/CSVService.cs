@@ -72,7 +72,47 @@ namespace endavaRestApi.Data
             _logger.Info("Successful");
             await _shopContext.SaveChangesAsync();
         }
+        public async Task<object> GetMatchingPaymentDetailsAsync(int userId, string productName)
+        {
+            try
+            {
+                var user = await _shopContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                if (user == null)
+                {
+                    _logger.Error($"User with ID '{userId}' not found.");
+                    return "User not found.";
+                }
 
+                var product = await _shopContext.Products.FirstOrDefaultAsync(p => p.ProductName == productName);
+                if (product == null)
+                {
+                    _logger.Error($"Product with name '{productName}' not found.");
+                    return "Product not found.";
+                }
+
+                var payment = await _shopContext.Payments.FirstOrDefaultAsync(p => p.UserId == userId && p.PricePaid == product.TotalPrice);
+                if (payment == null)
+                {
+                    _logger.Error($"Payment for user ID '{userId}' and product '{productName}' not found or the price doesn't match.");
+                    return "Payment not found or the price doesn't match.";
+                }
+
+                var result = new
+                {
+                    UserName = user.Name,
+                    ProductName = product.ProductName,
+                    PricePaid = payment.PricePaid,
+                    PaymentMethod = payment.PaymentMethod
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("An error occurred while retrieving the payment details.", ex);
+                return "An error occurred while retrieving the payment details.";
+            }
+        }
     }
 
 }

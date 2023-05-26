@@ -51,5 +51,55 @@ namespace Testing.Tests.ShopControllerTesting
             A.CallTo(() => file.Length).Returns(stream.Length);
             return file;
         }
+        [Fact]
+        public async Task GetMatchingPaymentDetails_WithValidData_ReturnsOkResult()
+        {
+            // Arrange
+            int userId = 1;
+            string productName = "Product 1";
+            var expectedPaymentDetails = new
+            {
+                UserName = "Stiles",
+                ProductName = "Product 1",
+                PricePaid = 10.0,
+                PaymentMethod = "Card"
+            };
+
+            A.CallTo(() => _csvRepository.GetMatchingPaymentDetailsAsync(userId, productName))
+                .Returns(expectedPaymentDetails);
+
+            var controller = new ShopController(_shopRepository, _csvRepository);
+
+            // Act
+            var result = await controller.GetMatchingPaymentDetails(userId, productName);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>();
+
+            var okResult = result as OkObjectResult;
+            okResult.Value.Should().BeEquivalentTo(expectedPaymentDetails);
+        }
+
+        [Fact]
+        public async Task GetMatchingPaymentDetails_WithInvalidData_ReturnsBadRequestResult()
+        {
+            // Arrange
+            int userId = 1;
+            string productName = "Non-existing Product";
+
+            A.CallTo(() => _csvRepository.GetMatchingPaymentDetailsAsync(userId, productName))
+                .Returns("Product not found.");
+
+            var controller = new ShopController(_shopRepository, _csvRepository);
+
+            // Act
+            var result = await controller.GetMatchingPaymentDetails(userId, productName);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+
+            var badRequestResult = result as BadRequestObjectResult;
+            badRequestResult.Value.Should().Be("Product not found.");
+        }
     }
 }
